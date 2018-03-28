@@ -85,3 +85,12 @@ assume()
     aws configure set aws_session_token $(echo "$AWS_CREDS" | jq '.Credentials.SessionToken?' -r) --profile ${PROFILE_NAME}
     aws configure set region eu-west-1 --profile ${PROFILE_NAME}
 }
+
+case "$1" in
+  *sh)
+    exec "$@"
+    exit 1
+    ;;
+esac
+
+assume "$@"
