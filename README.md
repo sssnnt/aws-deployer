@@ -7,7 +7,7 @@ This repository contains Docker image for running AWS cli commands that assumes 
 
 How to use
 ==========
-#### Showing usage.
+#### Displaying help.
 ```sh
 > docker run -it matsskoglund/aws-deployer --help
   assume [-h|--help] [-v|--version] -a|--account <aws account number> [-r|--role <IAM role>] [-p|--profile <aws cli profile name>] []
@@ -20,17 +20,23 @@ How to use
     -p|--profile   the name of the resulting aws cli profile to use
 ```
 
-#### Showing script version.
+#### Displaying script version.
 
 ```sh
 > docker run -it matsskoglund/aws-deployer --version
   assume version 1.0.0
 ```
 
-#### Assuming an AWS role.
+#### Assuming an AWS role. (Main use case)
 
-The example below is a Gitlab ``.gitlab-ci.yml`` file in a project where an AWS CloudFormation template named ``cloudformation-template.yml`` is validated in the AWS account *123456789012* by assuming the ``arn:aws:iam::123456789012:role/DeployRole`` role that must exist in the AWS account and have ``cloudformation:ValidateTemplate`` permissions. 
 
+In this example the command:
+
+``assume --account 123456789012 --profile assumed-profile``
+
+is used in a Gitlab ``.gitlab-ci.yml`` file for CI/CD. The Gitlab project contains an AWS CloudFormation template named ``cloudformation-template.yml`` that is validated in the AWS account *123456789012* by assuming the ``arn:aws:iam::123456789012:role/DeployRole`` role that exist in the specified AWS account and have ``cloudformation:ValidateTemplate`` permissions. The temporary credentials resulting from the assume command are stored in an AWS profile named ``assumed-profile``.
+
+**.gitlab-ci.yml:**
 ```yml
 image: matsskoglund/docker-aws-deployer
 
