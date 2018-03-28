@@ -15,3 +15,4 @@ RUN ln -s /assume.sh /usr/bin/assume && \
     chmod +x /assume.sh
 
 ENTRYPOINT [ "/entrypoint.sh" ]
+CMD ["--help"]
