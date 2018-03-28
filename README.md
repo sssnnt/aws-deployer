@@ -2,7 +2,7 @@
 
 AWS Deployer Docker Image
 =================================
-This repository contains Docker image for running AWS cli commands that assumes a IAM role baked into one cli commands. They can be useful for deploying AWS CloudFormation templates in e.g. a build server where the build server need to assume some other role to deploy.
+This repository contains Docker image for running AWS cli commands that assumes a IAM role baked into one cli command. They can be useful for deploying AWS CloudFormation templates in e.g. a build server where the build server need to assume some other role to deploy.
 
 
 How to use
@@ -61,6 +61,6 @@ Starting a bash session in the container can be useful for debugging purposes.
    > docker run -it matsskoglund/aws-deployer bash
    bash-4.3#
 ```
-
-
+## Links
+<a href="https://hub.docker.com/r/matsskoglund/aws-deployer/" target="_blank">Docker image on Dockerhub</a>
 
