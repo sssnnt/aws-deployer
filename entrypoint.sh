@@ -92,5 +92,4 @@ case "$1" in
     exit 1
     ;;
 esac
-
 exec /usr/bin/assume.sh "$@"

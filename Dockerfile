@@ -8,6 +8,8 @@ RUN apk --no-cache update && \
 WORKDIR /data
 
 COPY entrypoint.sh /
-COPY assume.sh /usr/bin
+COPY assume.sh / 
+
+RUN ln -s /assume.sh /usr/bin/assume 
 
 ENTRYPOINT [ "/entrypoint.sh" ]
