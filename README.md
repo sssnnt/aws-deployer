@@ -7,6 +7,8 @@ The following command is supported:
     assume
 ```
 
+[![Docker status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=matsskoglund&repository=aws-deployer)](https://dockerbuildbadges.quelltext.eu/status.svg?organization=matsskoglund&repository=aws-deployer)
+
 How to use
 ==========
 ```sh
