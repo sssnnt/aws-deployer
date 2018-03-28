@@ -18,8 +18,8 @@ case $1 in
     echo "   -h|--help      prints this help" >&2
     echo "   -v|--version   prints the current version of this script" >&2
     echo "   -a|--account   the AWS account number to deploy to. (mandatory)" >&2
-    echo "   -r|--role      the IAM role to assume" >&2
-    echo "   -p|--profile   the name of the resulting aws cli profile to use" >&2
+    echo "   -r|--role      the IAM role to assume (defaults to DeployRole)" >&2
+    echo "   -p|--profile   the name of the resulting aws cli profile to use (defaults to deploy-profile)" >&2
     echo "" >&2
     exit 0
     ;;
