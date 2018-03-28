@@ -6,3 +6,7 @@ RUN apk --no-cache update && \
     rm -rf /var/cache/apk/*
 
 WORKDIR /data
+
+COPY entrypoint.sh /usr/bin
+
+ENTRYPOINT [ "entrypoint.sh" ]
