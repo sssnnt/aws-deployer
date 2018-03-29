@@ -1,4 +1,4 @@
-[![Docker status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=matsskoglund&repository=aws-deployer)](https://hub.docker.com/r/matsskoglund/aws-deployer/builds/)
+[![Docker status](https://dockerbuildbadges.quelltext.eu/status.svg?organization=scaniadevtools&repository=aws-deployer)](https://hub.docker.com/r/scaniadevtools/aws-deployer/builds/)
 
 AWS Deployer Docker Image
 =================================
@@ -62,5 +62,5 @@ Starting a bash session in the container can be useful for debugging purposes.
    bash-4.3#
 ```
 ## Links
-<a href="https://hub.docker.com/r/matsskoglund/aws-deployer/" target="_blank">Docker image on Dockerhub</a>
+<a href="https://hub.docker.com/r/scaniadevtools/aws-deployer/" target="_blank">Docker image on Dockerhub</a>
 
