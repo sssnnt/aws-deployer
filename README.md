@@ -9,7 +9,7 @@ How to use
 ==========
 #### Displaying help.
 ```sh
-> docker run -it matsskoglund/aws-deployer --help
+> docker run -it scaniadevtools/aws-deployer --help
   assume [-h|--help] [-v|--version] -a|--account <aws account number> [-r|--role <IAM role>] [-p|--profile <aws cli profile name>] []
 
   Assumes a role in the specified AWS account and creates temporary credentials in the named profile.
@@ -23,7 +23,7 @@ How to use
 #### Displaying script version.
 
 ```sh
-> docker run -it matsskoglund/aws-deployer --version
+> docker run -it scaniadevtools/aws-deployer --version
   assume version 1.0.0
 ```
 
@@ -38,7 +38,7 @@ is used in a Gitlab ``.gitlab-ci.yml`` file for CI/CD. The Gitlab project contai
 
 **.gitlab-ci.yml:**
 ```yml
-image: matsskoglund/docker-aws-deployer
+image: scaniadevtools/docker-aws-deployer
 
 stages:
   - validate-template 
@@ -58,7 +58,7 @@ The account number (*123456789012* in this example) can be located in the AWS co
 Starting a bash session in the container can be useful for debugging purposes.
 
 ```sh
-   > docker run -it matsskoglund/aws-deployer bash
+   > docker run -it scaniadevtools/aws-deployer bash
    bash-4.3#
 ```
 ## Links
