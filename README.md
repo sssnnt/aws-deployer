@@ -64,3 +64,9 @@ Starting a bash session in the container can be useful for debugging purposes.
 ## Links
 <a href="https://hub.docker.com/r/scaniadevtools/aws-deployer/" target="_blank">Docker image on Dockerhub</a>
 
+__Happy Hacking__
+
+*Scania Devtools Team*
+
+## Want to contribute?
+Go to the <a href="CONTRIBUTING.md">CONTRIBUTING</a> page.
