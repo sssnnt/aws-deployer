@@ -62,7 +62,7 @@ Starting a bash session in the container can be useful for debugging purposes.
    bash-4.3#
 ```
 ## Links
-[Docker image on Dockerhub]("https://hub.docker.com/r/scaniadevtools/aws-deployer/")
+[Docker image on Dockerhub](https://hub.docker.com/r/scaniadevtools/aws-deployer/)
 
 __Happy Hacking__
 
