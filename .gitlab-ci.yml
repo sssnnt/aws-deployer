@@ -78,6 +78,7 @@ publish-aws-deployer:
   before_script:
     - VERSION=$(cat aws-deployer/VERSION)
     - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:latest
     - docker push $REGISTRY/aws-deployer:latest
@@ -93,6 +94,7 @@ publish-aws-deployer-docker:
   before_script:
     - VERSION=$(cat aws-deployer/VERSION)
     - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:docker
     - docker push $REGISTRY/aws-deployer:docker
