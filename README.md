@@ -23,14 +23,14 @@ The latest version of the base ``aws-deployer``image. If you don't know which ve
 
 > Usage example:
 > 
-> ```sh
-docker pull scaniadevtools/aws-deployer:latest
-```
+> 
+>docker pull scaniadevtools/aws-deployer:latest
+>```
 > or
 > 
 > ```sh
-docker pull scaniadevtools/aws-deployer
-```
+>docker pull scaniadevtools/aws-deployer
+>```
 
 ### Semantic version number ``x.x.x``
 This refers to the ``x.x.x`` version of the ``aws-deployer``image
@@ -38,8 +38,8 @@ This refers to the ``x.x.x`` version of the ``aws-deployer``image
 > Usage example: ``1.0.0`` refers to the 1.0.0 version of the base image.
 > 
 > ```sh
-docker pull scaniadevtools/aws-deployer:1.0.0
-```
+>docker pull scaniadevtools/aws-deployer:1.0.0
+>```
 
 ### [extension-name]
 This refers to the latest version of the extension image with the name ``[extension-name]``.  
