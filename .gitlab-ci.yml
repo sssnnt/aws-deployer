@@ -1,0 +1,106 @@
+stages:
+  - build-aws-deployer
+  - test-aws-deployer
+  - build-aws-deployer-docker
+  - test-aws-deployer-docker
+  - publish-aws-deployer
+  - publish-aws-deployer-docker
+
+before_script:
+  - VERSION=$(cat aws-deployer/VERSION)
+variables:
+  DOCKER_DRIVER: overlay2
+  REGISTRY: scaniadevtools
+  TEST_REGISTRY: registry.gitlab.com/scaniadevtools 
+  
+
+.job_template: &test-aws-deployer-template
+  stage: test-aws-deployer
+  script:
+    - aws --version
+  tags:
+    - vanilla
+ 
+build-aws-deployer:
+  stage: build-aws-deployer
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION
+      -t $TEST_REGISTRY/aws-deployer:latest 
+      aws-deployer/.
+    - docker push $TEST_REGISTRY/aws-deployer:latest
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION
+  tags: 
+    - dind
+
+test-aws-deployer-latest:
+  image:  $TEST_REGISTRY/aws-deployer:latest
+  <<: *test-aws-deployer-template
+
+test-aws-deployer-empty:
+  image:  $TEST_REGISTRY/aws-deployer
+  <<: *test-aws-deployer-template
+
+build-aws-deployer-docker:
+  stage: build-aws-deployer-docker
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-docker 
+      -t $TEST_REGISTRY/aws-deployer:docker
+      aws-deployer-docker/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-docker
+    - docker push $TEST_REGISTRY/aws-deployer:docker
+  tags:
+    - dind
+  dependencies:
+    - test-aws-deployer-latest
+
+test-aws-deployer-docker-docker:
+  image:  $TEST_REGISTRY/aws-deployer:docker
+  stage: test-aws-deployer-docker
+  script:
+    - aws --version
+    - docker build aws-deployer-docker/test/
+  tags:
+    - dind
+  dependencies:
+    - build-aws-deployer-docker
+
+publish-aws-deployer:
+  stage: publish-aws-deployer
+  before_script:
+    - VERSION=$(cat aws-deployer/VERSION)
+    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+  script:
+    - docker pull $TEST_REGISTRY/aws-deployer:latest
+    - docker push $REGISTRY/aws-deployer:latest
+    - docker pull $TEST_REGISTRY/aws-deployer:latest
+    - docker push $REGISTRY/aws-deployer:$VERSION    
+  tags:
+    - dind
+  dependencies:
+    - test-aws-deployer-latest
+
+publish-aws-deployer-docker:
+  stage: publish-aws-deployer-docker
+  before_script:
+    - VERSION=$(cat aws-deployer/VERSION)
+    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+  script:
+    - docker pull $TEST_REGISTRY/aws-deployer:docker
+    - docker push $REGISTRY/aws-deployer:docker
+    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-docker
+    - docker push $REGISTRY/aws-deployer:$VERSION-docker
+  tags:
+    - dind
+  dependencies:
+     - test-aws-deployer-docker-docker
+     - publish-aws-deployer
