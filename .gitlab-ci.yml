@@ -10,9 +10,8 @@ before_script:
   - VERSION=$(cat aws-deployer/VERSION)
 variables:
   DOCKER_DRIVER: overlay2
-  REGISTRY: scaniadevtools
   TEST_REGISTRY: registry.gitlab.com/scaniadevtools 
-  
+  REGISTRY: scaniadevtools
 
 .job_template: &test-aws-deployer-template
   stage: test-aws-deployer
@@ -82,7 +81,7 @@ publish-aws-deployer:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:latest
     - docker push $REGISTRY/aws-deployer:latest
-    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION
+    - docker pull $TEST_REGISTRY/aws-deployer:latest
     - docker push $REGISTRY/aws-deployer:$VERSION    
   tags:
     - dind
