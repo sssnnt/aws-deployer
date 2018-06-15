@@ -7,9 +7,6 @@ How to use
 ==========
 Same as [``aws-deployer``](../aws-deployer) image.
 
-## Links
-[Docker image on Dockerhub](https://hub.docker.com/r/scaniadevtools/aws-deployer/)
-
 __Happy Hacking__
 
 *Scania Devtools Team*

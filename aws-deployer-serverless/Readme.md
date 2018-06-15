@@ -21,9 +21,6 @@ build:
         - serverless deploy -v --stage test
 
 
-## Links
-[Docker image on Dockerhub](https://hub.docker.com/r/scaniadevtools/aws-deployer/)
-
 __Happy Hacking__
 
 *Scania Devtools Team*
