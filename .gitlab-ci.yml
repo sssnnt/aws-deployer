@@ -4,8 +4,11 @@ stages:
   - test-aws-deployer
   - build-aws-deployer-docker
   - test-aws-deployer-docker
+  - build-aws-deployer-serverless
+  - test-aws-deployer-serverless
   - publish-aws-deployer
   - publish-aws-deployer-docker
+  - publish-aws-deployer-serverless
 
 before_script:
   - VERSION=$(cat aws-deployer/VERSION)
@@ -91,6 +94,35 @@ test-aws-deployer-docker-docker:
   dependencies:
     - build-aws-deployer-docker
 
+build-aws-deployer-serverless:
+  stage: build-aws-deployer-serverless
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-serverless 
+      -t $TEST_REGISTRY/aws-deployer:serverless
+      aws-deployer-serverless/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-serverless
+    - docker push $TEST_REGISTRY/aws-deployer:serverless
+  tags:
+    - dind
+  dependencies:
+    - test-aws-deployer-latest
+
+test-aws-deployer-serverless:
+  image:  $TEST_REGISTRY/aws-deployer:serverless
+  stage: test-aws-deployer-serverless
+  script:
+    - aws --version
+    - serverless --version
+  tags:
+    - dind
+  dependencies:
+    - build-aws-deployer-serverless
+
 publish-aws-deployer:
   stage: publish-aws-deployer
   before_script:
@@ -134,6 +166,25 @@ publish-aws-deployer-docker:
     - master
   dependencies:
      - test-aws-deployer-docker-docker
+     - publish-aws-deployer
+
+publish-aws-deployer-serverless:
+  stage: publish-aws-deployer-serverless
+  before_script:
+    - VERSION=$(cat aws-deployer/VERSION)
+    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+  script:
+    - docker pull $TEST_REGISTRY/aws-deployer:serverless
+    - docker tag $TEST_REGISTRY/aws-deployer:serverless $REGISTRY/aws-deployer:serverless
+    - docker push $REGISTRY/aws-deployer:serverless
+    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-serverless
+    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-serverless $REGISTRY/aws-deployer:$VERSION-serverless
+    - docker push $REGISTRY/aws-deployer:$VERSION-serverless
+  tags:
+    - dind
+  dependencies:
+     - test-aws-deployer-serverless
      - publish-aws-deployer
 
 preflight:
