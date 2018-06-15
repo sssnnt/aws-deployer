@@ -22,7 +22,7 @@ build:
 
 
 ## Links
-[Docker image on Dockerhub](https://hub.docker.com/r/scaniadevtools/aws-deployer-serverless/)
+[Docker image on Dockerhub](https://hub.docker.com/r/scaniadevtools/aws-deployer/)
 
 __Happy Hacking__
 
