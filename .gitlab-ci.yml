@@ -7,8 +7,7 @@ stages:
   - build-aws-deployer-serverless
   - test-aws-deployer-serverless
   - publish-aws-deployer
-  - publish-aws-deployer-docker
-  - publish-aws-deployer-serverless
+  - publish-aws-deployer-child
 
 before_script:
   - VERSION=$(cat aws-deployer/VERSION)
@@ -146,7 +145,7 @@ publish-aws-deployer:
     - test-aws-deployer-latest
 
 publish-aws-deployer-docker:
-  stage: publish-aws-deployer-docker
+  stage: publish-aws-deployer-child
   before_script:
     - VERSION=$(cat aws-deployer/VERSION)
     - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
@@ -169,7 +168,7 @@ publish-aws-deployer-docker:
      - publish-aws-deployer
 
 publish-aws-deployer-serverless:
-  stage: publish-aws-deployer-serverless
+  stage: publish-aws-deployer-child
   before_script:
     - VERSION=$(cat aws-deployer/VERSION)
     - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
