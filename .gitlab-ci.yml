@@ -6,6 +6,8 @@ stages:
   - test-aws-deployer-docker
   - build-aws-deployer-serverless
   - test-aws-deployer-serverless
+  - build-aws-deployer-dind
+  - test-aws-deployer-dind
   - publish-aws-deployer
   - publish-aws-deployer-child
 
@@ -108,6 +110,8 @@ build-aws-deployer-serverless:
     - docker push $TEST_REGISTRY/aws-deployer:serverless
   tags:
     - dind
+  only:
+    - master
   dependencies:
     - test-aws-deployer-latest
 
@@ -119,8 +123,41 @@ test-aws-deployer-serverless:
     - serverless --version
   tags:
     - dind
+  only:
+    - master
   dependencies:
     - build-aws-deployer-serverless
+
+build-aws-deployer-dind:
+  stage: build-aws-deployer-dind
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-dind 
+      -t $TEST_REGISTRY/aws-deployer:dind
+      aws-deployer-dind/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-dind
+    - docker push $TEST_REGISTRY/aws-deployer:dind
+  tags:
+    - dind
+  dependencies:
+    - test-aws-deployer-latest
+
+test-aws-deployer-dind:
+  image:  $TEST_REGISTRY/aws-deployer:dind
+  stage: test-aws-deployer-dind
+  services:
+    - docker:dind
+  script:
+    - aws --version
+    - docker --version
+  tags:
+    - dind
+  dependencies:
+    - build-aws-deployer-dind
 
 publish-aws-deployer:
   stage: publish-aws-deployer
@@ -182,8 +219,33 @@ publish-aws-deployer-serverless:
     - docker push $REGISTRY/aws-deployer:$VERSION-serverless
   tags:
     - dind
+  only:
+    - master
+  only:
+    - master
   dependencies:
      - test-aws-deployer-serverless
+     - publish-aws-deployer
+  
+publish-aws-deployer-dind:
+  stage: publish-aws-deployer-child
+  before_script:
+    - VERSION=$(cat aws-deployer/VERSION)
+    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+  script:
+    - docker pull $TEST_REGISTRY/aws-deployer:dind
+    - docker tag $TEST_REGISTRY/aws-deployer:dind $REGISTRY/aws-deployer:dind
+    - docker push $REGISTRY/aws-deployer:dind
+    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-dind
+    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-dind $REGISTRY/aws-deployer:$VERSION-dind
+    - docker push $REGISTRY/aws-deployer:$VERSION-dind
+  tags:
+    - dind
+  only:
+    - master
+  dependencies:
+     - test-aws-deployer-dind
      - publish-aws-deployer
 
 preflight:
