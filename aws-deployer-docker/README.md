@@ -12,4 +12,4 @@ __Happy Hacking__
 *Scania Devtools Team*
 
 ## Want to contribute?
-Go to the [CONTRIBUTING]("../CONTRIBUTING.md") page.
+Go to the [CONTRIBUTING](../CONTRIBUTING.md) page.
