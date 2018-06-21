@@ -23,12 +23,12 @@ The latest version of the base ``aws-deployer``image. If you don't know which ve
 
 > Usage example:
 > 
-> 
+>```sh
 >docker pull scaniadevtools/aws-deployer:latest
 >```
 > or
 > 
-> ```sh
+>```sh
 >docker pull scaniadevtools/aws-deployer
 >```
 

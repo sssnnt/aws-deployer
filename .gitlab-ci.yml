@@ -6,8 +6,6 @@ stages:
   - test-aws-deployer-docker
   - build-aws-deployer-serverless
   - test-aws-deployer-serverless
-  - build-aws-deployer-dind
-  - test-aws-deployer-dind
   - publish-aws-deployer
   - publish-aws-deployer-child
 
@@ -15,7 +13,6 @@ before_script:
   - VERSION=$(cat aws-deployer/VERSION)
   
 variables:
-  DOCKER_DRIVER: overlay2
   REGISTRY: scaniadevtools
   TEST_REGISTRY: registry.gitlab.com/$REGISTRY 
   
@@ -44,7 +41,7 @@ build-aws-deployer:
     - docker push $TEST_REGISTRY/aws-deployer:latest
     - docker push $TEST_REGISTRY/aws-deployer:$VERSION
   tags: 
-    - dind
+    - docker
   except:
     - schedules
   only:
@@ -72,7 +69,7 @@ build-aws-deployer-docker:
     - docker push $TEST_REGISTRY/aws-deployer:$VERSION-docker
     - docker push $TEST_REGISTRY/aws-deployer:docker
   tags:
-    - dind
+    - docker
   except:
     - schedules
   only:
@@ -87,7 +84,7 @@ test-aws-deployer-docker-docker:
     - aws --version
     - docker build aws-deployer-docker/test/
   tags:
-    - dind
+    - docker
   except:
     - schedules
   only:
@@ -109,9 +106,11 @@ build-aws-deployer-serverless:
     - docker push $TEST_REGISTRY/aws-deployer:$VERSION-serverless
     - docker push $TEST_REGISTRY/aws-deployer:serverless
   tags:
-    - dind
+    - docker
   only:
     - master
+  except:
+    - schedules
   dependencies:
     - test-aws-deployer-latest
 
@@ -122,42 +121,13 @@ test-aws-deployer-serverless:
     - aws --version
     - serverless --version
   tags:
-    - dind
+    - docker
   only:
     - master
+  except:
+    - schedules
   dependencies:
     - build-aws-deployer-serverless
-
-build-aws-deployer-dind:
-  stage: build-aws-deployer-dind
-  before_script:  
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-    - >
-      docker build 
-      -t $TEST_REGISTRY/aws-deployer:$VERSION-dind 
-      -t $TEST_REGISTRY/aws-deployer:dind
-      aws-deployer-dind/.    
-    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-dind
-    - docker push $TEST_REGISTRY/aws-deployer:dind
-  tags:
-    - dind
-  dependencies:
-    - test-aws-deployer-latest
-
-test-aws-deployer-dind:
-  image:  $TEST_REGISTRY/aws-deployer:dind
-  stage: test-aws-deployer-dind
-  services:
-    - docker:dind
-  script:
-    - aws --version
-    - docker --version
-  tags:
-    - dind
-  dependencies:
-    - build-aws-deployer-dind
 
 publish-aws-deployer:
   stage: publish-aws-deployer
@@ -173,7 +143,7 @@ publish-aws-deployer:
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION $REGISTRY/aws-deployer:$VERSION
     - docker push $REGISTRY/aws-deployer:$VERSION    
   tags:
-    - dind
+    - docker
   except:
     - schedules
   only:
@@ -195,7 +165,7 @@ publish-aws-deployer-docker:
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-docker $REGISTRY/aws-deployer:$VERSION-docker
     - docker push $REGISTRY/aws-deployer:$VERSION-docker
   tags:
-    - dind
+    - docker
   except:
     - schedules
   only:
@@ -218,36 +188,15 @@ publish-aws-deployer-serverless:
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-serverless $REGISTRY/aws-deployer:$VERSION-serverless
     - docker push $REGISTRY/aws-deployer:$VERSION-serverless
   tags:
-    - dind
+    - docker
   only:
     - master
-  only:
-    - master
+  except:
+    - schedules
   dependencies:
      - test-aws-deployer-serverless
      - publish-aws-deployer
   
-publish-aws-deployer-dind:
-  stage: publish-aws-deployer-child
-  before_script:
-    - VERSION=$(cat aws-deployer/VERSION)
-    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-  script:
-    - docker pull $TEST_REGISTRY/aws-deployer:dind
-    - docker tag $TEST_REGISTRY/aws-deployer:dind $REGISTRY/aws-deployer:dind
-    - docker push $REGISTRY/aws-deployer:dind
-    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-dind
-    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-dind $REGISTRY/aws-deployer:$VERSION-dind
-    - docker push $REGISTRY/aws-deployer:$VERSION-dind
-  tags:
-    - dind
-  only:
-    - master
-  dependencies:
-     - test-aws-deployer-dind
-     - publish-aws-deployer
-
 preflight:
   stage: build-aws-deployer
   before_script:  
@@ -255,17 +204,17 @@ preflight:
   script:
       docker build -t aws-deployer:latest aws-deployer/.
   tags: 
-    - dind
+    - docker
   except:
     - schedules
     - master
- 
 
 cleaning:
+  image: docker:stable
   stage: cleaning
   only:
     - schedules
   script:
     - docker image prune -a -f
   tags:
-    - dind
+    - docker
