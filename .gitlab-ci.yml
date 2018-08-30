@@ -20,12 +20,14 @@ variables:
   stage: test-aws-deployer
   script:
     - aws --version
+    - python --version
+    - python -c "print('Hello World')"  
   tags:
     - vanilla
   except:
     - schedules
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
  
 build-aws-deployer:
   stage: build-aws-deployer
@@ -45,7 +47,40 @@ build-aws-deployer:
   except:
     - schedules
   only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+
+build-aws-deployer-branch:
+  stage: build-aws-deployer
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME      
+      aws-deployer/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
+  tags: 
+    - docker
+  except:
+    - schedules
     - master
+  only:
+    - /^feature-*/
+
+test-aws-deployer-branch:
+  image:  $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
+  stage: test-aws-deployer
+  script:
+    - aws --version
+    - python --version
+    - python -c "print('Hello World')"          
+  tags:
+    - vanilla
+  except:
+    - schedules  
+    - master
+
 
 test-aws-deployer-latest:
   image:  $TEST_REGISTRY/aws-deployer:latest
@@ -73,7 +108,7 @@ build-aws-deployer-docker:
   except:
     - schedules
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
     - test-aws-deployer-latest
 
@@ -88,7 +123,7 @@ test-aws-deployer-docker-docker:
   except:
     - schedules
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
     - build-aws-deployer-docker
 
@@ -108,7 +143,7 @@ build-aws-deployer-serverless:
   tags:
     - docker
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
@@ -123,7 +158,7 @@ test-aws-deployer-serverless:
   tags:
     - docker
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
@@ -147,7 +182,7 @@ publish-aws-deployer:
   except:
     - schedules
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
     - test-aws-deployer-latest
 
@@ -169,7 +204,7 @@ publish-aws-deployer-docker:
   except:
     - schedules
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
      - test-aws-deployer-docker-docker
      - publish-aws-deployer
@@ -190,25 +225,13 @@ publish-aws-deployer-serverless:
   tags:
     - docker
   only:
-    - master
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
      - test-aws-deployer-serverless
      - publish-aws-deployer
   
-preflight:
-  stage: build-aws-deployer
-  before_script:  
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-      docker build -t aws-deployer:latest aws-deployer/.
-  tags: 
-    - docker
-  except:
-    - schedules
-    - master
-
 cleaning:
   image: docker:stable
   stage: cleaning
