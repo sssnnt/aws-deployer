@@ -297,7 +297,7 @@ test-aws-deployer-mysql:
     - build-aws-deployer-mysql
 
 # For mysql
-publish-aws-deployer-serverless:
+publish-aws-deployer-mysql:
   variables:
     EXTENSION: mysql
   stage: publish-aws-deployer-child
