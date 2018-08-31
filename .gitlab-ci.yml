@@ -6,6 +6,9 @@ stages:
   - test-aws-deployer-docker
   - build-aws-deployer-serverless
   - test-aws-deployer-serverless
+  - build-aws-deployer-mysql
+  - build-aws-deployer-extension
+  - test-aws-deployer-extension
   - publish-aws-deployer
   - publish-aws-deployer-child
 
@@ -14,8 +17,9 @@ before_script:
   
 variables:
   REGISTRY: scaniadevtools
-  TEST_REGISTRY: registry.gitlab.com/$REGISTRY 
+  TEST_REGISTRY: registry.gitlab.com/$REGISTRY
   
+# For building BASE
 .job_template: &test-aws-deployer-template
   stage: test-aws-deployer
   script:
@@ -28,7 +32,8 @@ variables:
     - schedules
   only:
     - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
- 
+
+# BASE
 build-aws-deployer:
   stage: build-aws-deployer
   before_script:  
@@ -49,121 +54,17 @@ build-aws-deployer:
   only:
     - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 
-build-aws-deployer-branch:
-  stage: build-aws-deployer
-  before_script:  
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-    - >
-      docker build 
-      -t $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME      
-      aws-deployer/.    
-    - docker push $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
-  tags: 
-    - docker
-  except:
-    - schedules
-    - master
-  only:
-    - /^feature-*/
-
-test-aws-deployer-branch:
-  image:  $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
-  stage: test-aws-deployer
-  script:
-    - aws --version
-    - python --version
-    - python -c "print('Hello World')"          
-  tags:
-    - vanilla
-  except:
-    - schedules  
-    - master
-
-
+# For BASE
 test-aws-deployer-latest:
   image:  $TEST_REGISTRY/aws-deployer:latest
   <<: *test-aws-deployer-template
 
+# For BASE
 test-aws-deployer-empty:
   image:  $TEST_REGISTRY/aws-deployer
   <<: *test-aws-deployer-template
 
-build-aws-deployer-docker:
-  stage: build-aws-deployer-docker
-  before_script:  
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-    - >
-      docker build 
-      -t $TEST_REGISTRY/aws-deployer:$VERSION-docker 
-      -t $TEST_REGISTRY/aws-deployer:docker
-      aws-deployer-docker/.    
-    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-docker
-    - docker push $TEST_REGISTRY/aws-deployer:docker
-  tags:
-    - docker
-  except:
-    - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-  dependencies:
-    - test-aws-deployer-latest
-
-test-aws-deployer-docker-docker:
-  image:  $TEST_REGISTRY/aws-deployer:docker
-  stage: test-aws-deployer-docker
-  script:
-    - aws --version
-    - docker build aws-deployer-docker/test/
-  tags:
-    - docker
-  except:
-    - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-  dependencies:
-    - build-aws-deployer-docker
-
-build-aws-deployer-serverless:
-  stage: build-aws-deployer-serverless
-  before_script:  
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-    - >
-      docker build 
-      -t $TEST_REGISTRY/aws-deployer:$VERSION-serverless 
-      -t $TEST_REGISTRY/aws-deployer:serverless
-      aws-deployer-serverless/.    
-    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-serverless
-    - docker push $TEST_REGISTRY/aws-deployer:serverless
-  tags:
-    - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-  except:
-    - schedules
-  dependencies:
-    - test-aws-deployer-latest
-
-test-aws-deployer-serverless:
-  image:  $TEST_REGISTRY/aws-deployer:serverless
-  stage: test-aws-deployer-serverless
-  script:
-    - aws --version
-    - serverless --version
-  tags:
-    - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-  except:
-    - schedules
-  dependencies:
-    - build-aws-deployer-serverless
-
+# For BASE
 publish-aws-deployer:
   stage: publish-aws-deployer
   before_script:
@@ -186,6 +87,105 @@ publish-aws-deployer:
   dependencies:
     - test-aws-deployer-latest
 
+# For feature branches BASE
+build-aws-deployer-branch:
+  stage: build-aws-deployer
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME      
+      aws-deployer/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
+  tags: 
+    - docker
+  except:
+    - schedules
+    - master
+  only:
+    - /^feature-*/
+
+# For feature branches BASE
+test-aws-deployer-branch:
+  image:  $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
+  stage: test-aws-deployer
+  script:
+    - aws --version
+    - python --version
+    - python -c "print('Hello World')"          
+  tags:
+    - vanilla
+  except:
+    - schedules  
+    - master
+
+
+# For building extensions
+.job_template: &build-aws-deployer-extension-template  
+  stage: build-aws-deployer-extension
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION 
+      -t $TEST_REGISTRY/aws-deployer:$EXTENSION
+      aws-deployer-$EXTENSION/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
+    - docker push $TEST_REGISTRY/aws-deployer:$EXTENSION
+  tags:
+    - docker
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+    - /^feature-*/
+  except:
+    - schedules
+  dependencies:
+    - test-aws-deployer-latest
+
+# For docker
+build-aws-deployer-docker:
+  stage: build-aws-deployer-docker
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-docker 
+      -t $TEST_REGISTRY/aws-deployer:docker
+      aws-deployer-docker/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-docker
+    - docker push $TEST_REGISTRY/aws-deployer:docker
+  tags:
+    - docker
+  except:
+    - schedules
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+  dependencies:
+    - test-aws-deployer-latest
+
+# For docker
+test-aws-deployer-docker-docker:
+  image:  $TEST_REGISTRY/aws-deployer:docker
+  stage: test-aws-deployer-docker
+  script:
+    - aws --version
+    - docker build aws-deployer-docker/test/
+  tags:
+    - docker
+  except:
+    - schedules
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+  dependencies:
+    - build-aws-deployer-docker
+
+# For docker
 publish-aws-deployer-docker:
   stage: publish-aws-deployer-child
   before_script:
@@ -209,6 +209,47 @@ publish-aws-deployer-docker:
      - test-aws-deployer-docker-docker
      - publish-aws-deployer
 
+# For serverless
+build-aws-deployer-serverless:
+  stage: build-aws-deployer-serverless
+  before_script:  
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+    - VERSION=$(cat aws-deployer/VERSION)
+  script:
+    - >
+      docker build 
+      -t $TEST_REGISTRY/aws-deployer:$VERSION-serverless 
+      -t $TEST_REGISTRY/aws-deployer:serverless
+      aws-deployer-serverless/.    
+    - docker push $TEST_REGISTRY/aws-deployer:$VERSION-serverless
+    - docker push $TEST_REGISTRY/aws-deployer:serverless
+  tags:
+    - docker
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+  except:
+    - schedules
+  dependencies:
+    - test-aws-deployer-latest
+
+# For serverless
+test-aws-deployer-serverless:
+  image:  $TEST_REGISTRY/aws-deployer:serverless
+  stage: test-aws-deployer-serverless
+  script:
+    - aws --version
+    - serverless --version
+  tags:
+    - docker
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+  except:
+    - schedules
+  dependencies:
+    - build-aws-deployer-serverless
+
+
+# For serverless
 publish-aws-deployer-serverless:
   stage: publish-aws-deployer-child
   before_script:
@@ -231,7 +272,57 @@ publish-aws-deployer-serverless:
   dependencies:
      - test-aws-deployer-serverless
      - publish-aws-deployer
-  
+
+# For mysql
+build-aws-deployer-mysql:
+  variables:
+    EXTENSION: mysql
+  <<: *build-aws-deployer-extension-template
+
+# For mysql
+test-aws-deployer-mysql:
+  image:  $TEST_REGISTRY/aws-deployer:mysql 
+  stage: test-aws-deployer-extension
+  script:
+    - aws --version
+    - mysql --version
+  tags:
+    - docker
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+    - /^feature-*/
+  except:
+    - schedules
+  dependencies:
+    - build-aws-deployer-mysql
+
+# For mysql
+publish-aws-deployer-serverless:
+  variables:
+    EXTENSION: mysql
+  stage: publish-aws-deployer-child
+  before_script:
+    - VERSION=$(cat aws-deployer/VERSION)
+    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+  script:
+    - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
+    - docker tag $TEST_REGISTRY/aws-deployer:mysql $REGISTRY/aws-deployer:$EXTENSION
+    - docker push $REGISTRY/aws-deployer:$EXTENSION
+    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
+    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+    - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+  tags:
+    - docker
+  only:
+    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+  except:
+    - schedules
+  dependencies:
+     - test-aws-deployer-mysql
+     - publish-aws-deployer
+
+# Scheduled cleaning
 cleaning:
   image: docker:stable
   stage: cleaning
@@ -241,3 +332,4 @@ cleaning:
     - docker image prune -a -f
   tags:
     - docker
+
