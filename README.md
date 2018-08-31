@@ -1,4 +1,4 @@
-[![pipeline status](https://gitlab.com/scaniadevtools/aws-deployer/badges/master/pipeline.svg)](https://gitlab.com/scaniadevtools/aws-deployer/pipelines)
+[![pipeline status](https://gitlab.com/scaniadevtools/aws-deployer/badges/2.0.2/pipeline.svg)](https://gitlab.com/scaniadevtools/aws-deployer/commits/2.0.2)
 
 AWS Deployer Docker Image
 =================================
