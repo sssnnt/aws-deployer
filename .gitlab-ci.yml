@@ -87,41 +87,6 @@ publish-aws-deployer:
   dependencies:
     - test-aws-deployer-latest
 
-# For feature branches BASE
-build-aws-deployer-branch:
-  stage: build-aws-deployer
-  before_script:  
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-    - VERSION=$(cat aws-deployer/VERSION)
-  script:
-    - >
-      docker build 
-      -t $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME      
-      aws-deployer/.    
-    - docker push $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
-  tags: 
-    - docker
-  except:
-    - schedules
-    - master
-  only:
-    - /^feature-*/
-
-# For feature branches BASE
-test-aws-deployer-branch:
-  image:  $TEST_REGISTRY/aws-deployer:$CI_COMMIT_REF_NAME
-  stage: test-aws-deployer
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
-  script:
-    - aws --version
-    - python --version
-    - python -c "print('Hello World')"
-  tags:
-    - vanilla
-  except:
-    - schedules
 
 
 # For building extensions
@@ -171,9 +136,6 @@ test-aws-deployer-docker:
     - schedules
   dependencies:
     - build-aws-deployer-docker
-
-#################
-
 
 # For docker
 publish-aws-deployer-docker:
