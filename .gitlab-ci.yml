@@ -267,7 +267,7 @@ publish-aws-deployer-mysql:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
-    - docker tag $TEST_REGISTRY/aws-deployer:mysql $REGISTRY/aws-deployer:$EXTENSION
+    - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
     - docker push $REGISTRY/aws-deployer:$EXTENSION
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
@@ -292,7 +292,7 @@ publish-aws-deployer-ansible:
     - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
-    - docker tag $TEST_REGISTRY/aws-deployer:mysql $REGISTRY/aws-deployer:$EXTENSION
+    - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
     - docker push $REGISTRY/aws-deployer:$EXTENSION
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
