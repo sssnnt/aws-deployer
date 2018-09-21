@@ -19,7 +19,7 @@ There are extensions avaliable for the base image that extends the functionality
     -h|--help      prints this help
     -v|--version   prints the current version of this script
     -a|--account   the AWS account number to deploy to. (mandatory)
-    -r|--role      the IAM role to assume
+    -r|--role      the IAM role to assume (the role name not the ARN)
     -p|--profile   the name of the resulting aws cli profile to use
 ```
 
