@@ -30,8 +30,8 @@ variables:
     - vanilla
   except:
     - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+ # only:
+ #   - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 
 # BASE
 build-aws-deployer:
@@ -51,8 +51,8 @@ build-aws-deployer:
     - docker
   except:
     - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+ # only:
+ #   - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 
 # For BASE
 test-aws-deployer-latest:
@@ -74,16 +74,16 @@ publish-aws-deployer:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:latest
     - docker tag $TEST_REGISTRY/aws-deployer:latest $REGISTRY/aws-deployer:latest
-    - docker push $REGISTRY/aws-deployer:latest
+#    - docker push $REGISTRY/aws-deployer:latest
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION $REGISTRY/aws-deployer:$VERSION
-    - docker push $REGISTRY/aws-deployer:$VERSION    
+#    - docker push $REGISTRY/aws-deployer:$VERSION    
   tags:
     - docker
   except:
     - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#  only:
+#   - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
     - test-aws-deployer-latest
 
@@ -105,9 +105,9 @@ publish-aws-deployer:
     - docker push $TEST_REGISTRY/aws-deployer:$EXTENSION
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
+ # only:
+ #   - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+ #   - /^feature-*/
   except:
     - schedules
   dependencies:
@@ -129,9 +129,9 @@ test-aws-deployer-docker:
     - docker build aws-deployer-docker/test/
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#    - /^feature-*/
   except:
     - schedules
   dependencies:
@@ -147,16 +147,16 @@ publish-aws-deployer-docker:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:docker
     - docker tag $TEST_REGISTRY/aws-deployer:docker $REGISTRY/aws-deployer:docker
-    - docker push $REGISTRY/aws-deployer:docker
+#    - docker push $REGISTRY/aws-deployer:docker
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-docker
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-docker $REGISTRY/aws-deployer:$VERSION-docker
-    - docker push $REGISTRY/aws-deployer:$VERSION-docker
+#    - docker push $REGISTRY/aws-deployer:$VERSION-docker
   tags:
     - docker
   except:
     - schedules
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   dependencies:
      - test-aws-deployer-docker
      - publish-aws-deployer
@@ -176,9 +176,9 @@ test-aws-deployer-serverless:
     - serverless --version
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#    - /^feature-*/
   except:
     - schedules
   dependencies:
@@ -194,14 +194,14 @@ publish-aws-deployer-serverless:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:serverless
     - docker tag $TEST_REGISTRY/aws-deployer:serverless $REGISTRY/aws-deployer:serverless
-    - docker push $REGISTRY/aws-deployer:serverless
+#    - docker push $REGISTRY/aws-deployer:serverless
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-serverless
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-serverless $REGISTRY/aws-deployer:$VERSION-serverless
-    - docker push $REGISTRY/aws-deployer:$VERSION-serverless
+#    - docker push $REGISTRY/aws-deployer:$VERSION-serverless
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
@@ -223,9 +223,9 @@ test-aws-deployer-mysql:
     - mysql --version
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#    - /^feature-*/
   except:
     - schedules
   dependencies:
@@ -246,9 +246,9 @@ test-aws-deployer-ansible:
     - ansible --version
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-    - /^feature-*/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#    - /^feature-*/
   except:
     - schedules
   dependencies:
@@ -268,14 +268,14 @@ publish-aws-deployer-mysql:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
-    - docker push $REGISTRY/aws-deployer:$EXTENSION
+#    - docker push $REGISTRY/aws-deployer:$EXTENSION
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
-    - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+#    - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
@@ -293,14 +293,14 @@ publish-aws-deployer-ansible:
   script:
     - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
-    - docker push $REGISTRY/aws-deployer:$EXTENSION
+#    - docker push $REGISTRY/aws-deployer:$EXTENSION
     - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
     - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
-    - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+ #   - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
   tags:
     - docker
-  only:
-    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
+#  only:
+#    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
   except:
     - schedules
   dependencies:
