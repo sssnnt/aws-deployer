@@ -1,6 +1,6 @@
 #!/bin/bash
 
-VERSION=$(cat VERSION)
+VERSION=2.0.6
 
 ROLE_NAME=DeployRole
 PROFILE_NAME=deploy-profile
