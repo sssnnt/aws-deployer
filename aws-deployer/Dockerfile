@@ -1,7 +1,7 @@
 FROM python:3.7-alpine3.8
 
 RUN apk --no-cache update && \
-    apk --no-cache add ca-certificates groff less jq bash gettext && \
+    apk --no-cache add ca-certificates groff less jq bash && \
     pip --no-cache-dir install awscli && \
     rm -rf /var/cache/apk/*
 
