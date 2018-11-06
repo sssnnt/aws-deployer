@@ -13,7 +13,7 @@ stages:
   - publish-aws-deployer-child
 
 before_script:
-  - VERSION=2.0.6
+  - VERSION=$(cat aws-deployer/VERSION)
   
 variables:
   REGISTRY: scaniadevtools
