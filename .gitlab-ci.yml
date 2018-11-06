@@ -230,29 +230,29 @@ test-aws-deployer-mysql:
     - schedules
   dependencies:
     - build-aws-deployer-mysql
-
+# Removed due to issue #18 https://github.com/scaniadevtools/aws-deployer/issues/18
 ## For Ansible
-build-aws-deployer-ansible:
-  variables:
-    EXTENSION: ansible
-  <<: *build-aws-deployer-extension-template
+#build-aws-deployer-ansible:
+#  variables:
+#    EXTENSION: ansible
+#  <<: *build-aws-deployer-extension-template
 
+# Removed due to issue #18 https://github.com/scaniadevtools/aws-deployer/issues/18
 ## For Ansible
-test-aws-deployer-ansible:
-  image:  $TEST_REGISTRY/aws-deployer:ansible
-  stage: test-aws-deployer-extension
-  script:
-    - aws --version
-    - ansible --version
-  tags:
-    - docker
+#test-aws-deployer-ansible:
+#  image:  $TEST_REGISTRY/aws-deployer:ansible
+#  stage: test-aws-deployer-extension
+#  script:
+#    - aws --version
+#  tags:
+#    - docker
 #  only:
 #    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
 #    - /^feature-*/
-  except:
-    - schedules
-  dependencies:
-    - build-aws-deployer-ansible
+#  except:
+#    - schedules
+#  dependencies:
+#    - build-aws-deployer-ansible
 
 # PUBLISH
 
@@ -281,31 +281,33 @@ publish-aws-deployer-mysql:
   dependencies:
      - test-aws-deployer-mysql
      - publish-aws-deployer
-
-publish-aws-deployer-ansible:
-  variables:
-    EXTENSION: ansible
-  stage: publish-aws-deployer-child
-  before_script:
-    - VERSION=$(cat aws-deployer/VERSION)
-    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
-    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
-  script:
-    - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
-    - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
+     
+# Removed due to issue #18 https://github.com/scaniadevtools/aws-deployer/issues/18
+#publish-aws-deployer-ansible:
+#  variables:
+#    EXTENSION: ansible
+#  stage: publish-aws-deployer-child
+#  before_script:
+#    - VERSION=$(cat aws-deployer/VERSION)
+#    - docker login --username $DOCKER_USER --password $DOCKER_PASSWORD
+#    - docker login -u "gitlab-ci-token" -p "$CI_JOB_TOKEN" registry.gitlab.com
+#  script:
+#    - docker pull $TEST_REGISTRY/aws-deployer:$EXTENSION
+#    - docker tag $TEST_REGISTRY/aws-deployer:$EXTENSION $REGISTRY/aws-deployer:$EXTENSION
 #    - docker push $REGISTRY/aws-deployer:$EXTENSION
-    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
-    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
- #   - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
-  tags:
-    - docker
+#    - docker pull $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION
+#    - docker tag $TEST_REGISTRY/aws-deployer:$VERSION-$EXTENSION $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+# #   - docker push $REGISTRY/aws-deployer:$VERSION-$EXTENSION
+#  tags:
+#    - docker
 #  only:
 #    - /^(0|[1-9]\d*)\.(0|[1-9]\d*)\.(0|[1-9]\d*)$/
-  except:
-    - schedules
-  dependencies:
-     - test-aws-deployer-ansible
-     - publish-aws-deployer
+#  except:
+#    - schedules
+#  dependencies:
+#     - test-aws-deployer-ansible
+#     - publish-aws-deployer
+
 # Scheduled cleaning
 cleaning:
   image: docker:stable
