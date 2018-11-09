@@ -11,7 +11,7 @@ How to use
 Same as [``aws-deployer``](../aws-deployer) image.
 
 ## Example gitlab-ci.yml stage
-
+```
 build:
     stage: build
     image: aws-deployer:serverless
@@ -19,7 +19,7 @@ build:
         - assume -a ${account} -r ${deployRole} -p assumed-profile
         - npm install
         - serverless deploy -v --stage test
-
+```
 
 __Happy Hacking__
 
