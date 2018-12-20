@@ -1,7 +1,11 @@
 [![pipeline status](https://gitlab.com/scaniadevtools/aws-deployer/badges/2.0.2/pipeline.svg)](https://gitlab.com/scaniadevtools/aws-deployer/commits/2.0.2)
 
+December 20 2018: THIS REPOSITORY IS DISCONTINUED AND WILL NOT BE UPDATED ANYMORE. WE DO NOT ACCEPT ANY MORE PULL REQEUSTS.
+===========================================================================================================================
+
 AWS Deployer Docker Image
 =================================
+
 This repository contains Docker image for running AWS cli commands that assumes a IAM role baked into one cli command. They can be useful for deploying AWS CloudFormation templates in e.g. a build server where the build server need to assume some other role to deploy.
 
 For usage details go [here](aws-deployer)
