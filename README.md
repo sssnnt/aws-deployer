@@ -1,6 +1,5 @@
-[![pipeline status](https://gitlab.com/scaniadevtools/aws-deployer/badges/2.0.2/pipeline.svg)](https://gitlab.com/scaniadevtools/aws-deployer/commits/2.0.2)
 
-December 20 2018: THIS REPOSITORY IS DISCONTINUED AND WILL NOT BE UPDATED ANYMORE. WE DO NOT ACCEPT ANY MORE PULL REQEUSTS.
+THIS REPOSITORY IS DISCONTINUED AND WILL NOT BE UPDATED ANYMORE. WE DO NOT ACCEPT ANY MORE PULL REQEUSTS. THIS RESPOSTORY WILL BE REMOVED ON MARCH 5 2019.
 ===========================================================================================================================
 
 AWS Deployer Docker Image
